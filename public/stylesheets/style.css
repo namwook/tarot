@@ -43,6 +43,11 @@ a {
 .kr{
   font-family:'Nanum Gothic';
 }
+
+.user_title{
+  text-align: center;
+  margin-bottom : 5px;
+}
 p{
   font-family: 'Nanum Gothic';
 }

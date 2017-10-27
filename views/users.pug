@@ -1,36 +1,40 @@
 extends layout
 
 block content
-    div(class='container col-xs-12 col-sm-12 col-md-4 mx-auto ', style='width: 30rem;')
+    div(class='container col-xs-12 col-sm-4 col-md-4 mx-auto user_title')
         div
             h1(class='bs') #{name}, #{title}
+        div
+            a(class='btn btn-outline-info', href='/') Previous
 
-    div(class='container col-xs-3 col-sm-12 col-md-9')
+
+    div(class='container col-xs-12 col-sm-6 col-md-9')
         div(class='row')
             div(class='col')
                 img(class='card-img-top', src= `${img_past}`, alt='Card Image cap')
-                div(class='container card  ')
-                    div(class='card-header ')
+                div(class='container card')
+                    div(class='card-header')
                         h4(class='card-title kr') 아침, 과거
-                    div(class='card-body ')
+                    div(class='card-body')
                         h4(class='card-title bs') #{past_name}
                         p(class='card-text') #{past}
             div(class='col')
                 img(class='card-img-top', src=`${img_present}`, alt='Card Image cap')
-                div(class='container card ')
+                div(class='container card')
                     div(class='card-header')
                         h4(class='card-title kr') 점심, 현재
-                    div(class='card-body ')
+                    div(class='card-body')
                         h4(class='card-title bs') #{present_name}
                         p(class='card-text') #{present}
             div(class='col')
                 img(class='card-img-top', src=`${img_future}`, alt='Card Image cap')
-                div(class='container card  ')
-                    div(class='card-header ')
+                div(class='container card')
+                    div(class='card-header')
                         h4(class='card-title kr') 저녁, 미래
-                    div(class='card-body ')
+                    div(class='card-body')
                         h4(class='card-title bs') #{future_name}
                         p(class='card-text') #{future}
 
-
-        //button(class='btn btn-primary',href='/', type='submit') submit
+    button(class='btn btn-primary', type='button', data-toggle="collapse", data-target="#collapseExample",aria-expanded="false", aria-controls="collapseExample") 해석
+    div#collapseExample(class="collapse")
+        p pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.

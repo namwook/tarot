@@ -8,8 +8,9 @@ router.get('/', (req: Request, res: Response) => {
     res.send('respond with a resource');
 });
 
-//FIXME: 카드 자리 중복 입력시에 제출 금지
+//FIXME: 카드 자리 중복 입력시에 제출 금지 -> 수정..
 router.post('/', (req: Request, res: Response) => {
+    
     const name = req.body.id;
     const fst = req.body.fst;
     const sec = req.body.sec;
@@ -34,7 +35,6 @@ router.post('/', (req: Request, res: Response) => {
         let s_content = tarotContent.tarotMeaning[r_sec];
         let t_content = tarotContent.tarotMeaning[r_third];
 
-        // let img1 = path.b);
         console.log('/images/' + f_name + '.jpg');
 
         res.render('users', {

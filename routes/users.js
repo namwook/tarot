@@ -6,7 +6,7 @@ exports.router = express.Router();
 exports.router.get('/', (req, res) => {
     res.send('respond with a resource');
 });
-//FIXME: 카드 자리 중복 입력시에 제출 금지
+//FIXME: 카드 자리 중복 입력시에 제출 금지 -> 수정..
 exports.router.post('/', (req, res) => {
     const name = req.body.id;
     const fst = req.body.fst;
@@ -27,7 +27,6 @@ exports.router.post('/', (req, res) => {
         let f_content = tarotContent.tarotMeaning[r_fst];
         let s_content = tarotContent.tarotMeaning[r_sec];
         let t_content = tarotContent.tarotMeaning[r_third];
-        // let img1 = path.b);
         console.log('/images/' + f_name + '.jpg');
         res.render('users', {
             title: 'Today Tarot', name: name,

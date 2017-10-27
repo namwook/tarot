@@ -1,9 +1,7 @@
 extends layout
 
 block content
-
-
-    div(class='container card col-xs-12 col-sm-12 col-md-4 col-lg-4')
+    div(class='container card col-xs-12 col-sm-4 col-md-4 col-lg-4')
         //img(class='card-img-top col-xs-12 col-sm-12 col-md-12', src='/images/0_the_fool.jpg', alt='Card Image cap')
         div(class='card-body')
             div(class='card-title')
@@ -18,13 +16,13 @@ block content
                 div(class='form-row')
                     div(class='form-group col-xs-4 col-sm-4 col-md-4')
                         label 1st Pick
-                        input(class='form-control',name='fst',required, type='number', min=0, max=21)
+                        input(class='form-control',name ='fst',required, type='number', min=0, max=21)
                     div(class='form-group col-xs-4 col-sm-4 col-md-4')
                         label 2nd Pick
                         input(class='form-control',name='sec',required, type='number', min=0, max=21)
                     div(class='form-group col-xs-4 col-sm-4 col-md-4')
                         label 3rd Pick
                         input(class='form-control',name='third',required, type='number', min=0, max=21)
-                    if (msg)
-                        p(style='color:red')=msg
                 button(class='btn btn-primary col-xs-12 col-sm-12 col-md-12', type='submit') submit
+                if (msg)
+                    div(class='alert alert-light col-xs-12 col-sm-12 col-md-12', role='alert')=msg
