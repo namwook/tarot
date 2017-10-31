@@ -1,28 +1,28 @@
 extends layout
 
 block content
-    div(class='container card col-xs-12 col-sm-4 col-md-4 col-lg-4')
-        //img(class='card-img-top col-xs-12 col-sm-12 col-md-12', src='/images/0_the_fool.jpg', alt='Card Image cap')
-        div(class='card-body')
-            div(class='card-title')
-                h1(class='bs') #{title}
-                p Welcome to #{title}
-                p Plz 이름과 0-21 사이의 카드를 3가지 선택하세요
-            form(action='/users', method='post')
-                div(class='form-row')
-                    div(class='form-group col-xs-12 col-sm-12 col-md-12')
-                        label Name
-                        input(class='form-control',name='id', required, placeholder='ID')
-                div(class='form-row')
-                    div(class='form-group col-xs-4 col-sm-4 col-md-4')
-                        label 1st Pick
-                        input(class='form-control',name ='fst',required, type='number', min=0, max=21)
-                    div(class='form-group col-xs-4 col-sm-4 col-md-4')
-                        label 2nd Pick
-                        input(class='form-control',name='sec',required, type='number', min=0, max=21)
-                    div(class='form-group col-xs-4 col-sm-4 col-md-4')
-                        label 3rd Pick
-                        input(class='form-control',name='third',required, type='number', min=0, max=21)
-                button(class='btn btn-primary col-xs-12 col-sm-12 col-md-12', type='submit') submit
-                if (msg)
-                    div(class='alert alert-light col-xs-12 col-sm-12 col-md-12', role='alert')=msg
+    .col-xs-12.col-sm-12.col-md-6.col-lg-4.mx-auto
+        .card
+            .card-body
+                .card-title
+                    h1.bs #{title}
+                    p Welcome to #{title}
+                    p Plz 이름과 0-21 사이의 카드를 3가지 선택하세요
+                form(action='/users', method='post')
+                    .form-row
+                        .form-group.col-xs-12.col-sm-12.col-md-12
+                            label Name
+                            input(class='form-control',name='id', required, placeholder='ID')
+                    .form-row
+                        .form-group.col-xs-4.col-sm-4.col-md-4
+                            label 1st Pick
+                            input(class='form-control',name ='fst',required, type='number', min=0, max=21)
+                        .form-group.col-xs-4.col-sm-4.col-md-4
+                            label 2nd Pick
+                            input(class='form-control',name='sec',required, type='number', min=0, max=21)
+                        .form-group.col-xs-4.col-sm-4.col-md-4
+                            label 3rd Pick
+                            input(class='form-control',name='third',required, type='number', min=0, max=21)
+                    button.btn.btn-primary.col-xs-12.col-sm-12.col-md-12(type='submit') submit
+                    if (msg)
+                        div(class='alert alert-light col-xs-12 col-sm-12 col-md-12', role='alert')=msg

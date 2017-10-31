@@ -1,40 +1,39 @@
 extends layout
 
 block content
-    div(class='container col-xs-12 col-sm-4 col-md-4 mx-auto user_title')
-        div
-            h1(class='bs') #{name}, #{title}
-        div
+    .col-12.mx-auto.user_title
+        .col-12
+            h1.display-2.bs #{name}, #{title}
+        .col-12
             a(class='btn btn-outline-info', href='/') Previous
 
 
-    div(class='container col-xs-12 col-sm-6 col-md-9')
-        div(class='row')
-            div(class='col')
+    .row
+        .col-xs-12.col-md-4
+            .card
                 img(class='card-img-top', src= `${img_past}`, alt='Card Image cap')
-                div(class='container card')
-                    div(class='card-header')
-                        h4(class='card-title kr') 아침, 과거
-                    div(class='card-body')
-                        h4(class='card-title bs') #{past_name}
-                        p(class='card-text') #{past}
-            div(class='col')
+                div(class='card-header')
+                    h4(class='card-title kr') 아침, 과거
+                div(class='card-body')
+                    h4(class='card-title bs') #{past_name}
+                    p(class='card-text') #{past}
+        .col-xs-12.col-md-4
+            .card
                 img(class='card-img-top', src=`${img_present}`, alt='Card Image cap')
-                div(class='container card')
-                    div(class='card-header')
-                        h4(class='card-title kr') 점심, 현재
-                    div(class='card-body')
-                        h4(class='card-title bs') #{present_name}
-                        p(class='card-text') #{present}
-            div(class='col')
-                img(class='card-img-top', src=`${img_future}`, alt='Card Image cap')
-                div(class='container card')
-                    div(class='card-header')
-                        h4(class='card-title kr') 저녁, 미래
-                    div(class='card-body')
-                        h4(class='card-title bs') #{future_name}
-                        p(class='card-text') #{future}
+                div(class='card-header')
+                    h4(class='card-title kr') 점심, 현재
+                div(class='card-body')
+                    h4(class='card-title bs') #{present_name}
+                    p(class='card-text') #{present}
+        .col-xs-12.col-md-4
+            .card
+                img.card-img-top(src=`${img_future}`, alt='Card Image cap')
+                div(class='card-header')
+                    h4(class='card-title kr') 저녁, 미래
+                div(class='card-body')
+                    h4(class='card-title bs') #{future_name}
+                    p(class='card-text') #{future}
 
     button(class='btn btn-primary', type='button', data-toggle="collapse", data-target="#collapseExample",aria-expanded="false", aria-controls="collapseExample") 해석
-    div#collapseExample(class="collapse")
+    .collapse#collapseExample
         p pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
