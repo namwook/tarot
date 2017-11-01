@@ -16,7 +16,10 @@ exports.router.post('/', (req, res) => {
         res.render('index', { title: 'Today Tarot', msg: '중복하여 카드를 선택하지 마세용...' });
     }
     else {
-        let list = randomCard();
+        // let c = userCheck(name);
+        // if (c) { // 유저가 있다면,
+        let list = randomCardO();
+        console.log(list);
         let r_fst = list[fst];
         let r_sec = list[sec];
         let r_third = list[third];
@@ -37,7 +40,19 @@ exports.router.post('/', (req, res) => {
             img_future: '/images/' + t_name + '.jpg'
         });
     }
+    // }
 });
+function userCheck(name) {
+    let saveName;
+    if (saveName.hasOwnProperty(name)) {
+        saveName.push(name);
+        return true;
+    }
+    else {
+        // 또는 여기서 User 객체 생성......
+        return false;
+    }
+}
 // FIXME: O(n^2) 낮추기
 function randomCard() {
     let list1 = [];
@@ -45,30 +60,30 @@ function randomCard() {
     for (let i = 0; i < 22; i++) {
         let cardIndex = getRandom(0, list2.length);
         list1.push(list2[cardIndex]);
-        /*console.log(`cardIndex : ${cardIndex}`);
-        console.log(`${i} : ${list2}`);*/
         list2.splice(cardIndex, 1);
     }
     return list1;
 }
 // FIXME: O(n+) 하는중 ..
 function randomCardO() {
-    let listBool = [];
-    let list = [];
-    listBool.fill(false, 0, 21);
-    list.fill(0, 0, 21);
-    console.log(list.length);
-    while (true) {
-        let cardIndex = getRandom(0, list.length);
+    let listBool = new Array(22);
+    let list = new Array();
+    let c = 0;
+    let index = 0;
+    listBool.fill(false, 0, 22);
+    while (c <= 21) {
+        index = 0;
+        let cardIndex = getRandom(0, listBool.length) % 23;
         if (listBool[cardIndex] == false) {
             list.push(cardIndex);
             listBool[cardIndex] = true;
+            console.log(list);
         }
+        c = 0;
         for (let i in listBool) {
-            if (listBool[i] == false) {
-                continue;
+            if (listBool[i] == true) {
+                c++;
             }
-            break;
         }
     }
     return list;

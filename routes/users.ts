@@ -10,7 +10,7 @@ router.get('/', (req: Request, res: Response) => {
 
 //FIXME: 카드 자리 중복 입력시에 제출 금지 -> 수정..
 router.post('/', (req: Request, res: Response) => {
-    
+
     const name = req.body.id;
     const fst = req.body.fst;
     const sec = req.body.sec;
@@ -19,8 +19,13 @@ router.post('/', (req: Request, res: Response) => {
     if (fst == sec || fst == third || sec == third) {
         res.render('index', {title: 'Today Tarot', msg: '중복하여 카드를 선택하지 마세용...'});
     } else {
-        let list = randomCard();
+        // let c = userCheck(name);
 
+        // if (c) { // 유저가 있다면,
+
+
+        let list = randomCardO();
+        console.log(list);
         let r_fst = list[fst];
         let r_sec = list[sec];
         let r_third = list[third];
@@ -46,7 +51,19 @@ router.post('/', (req: Request, res: Response) => {
             img_future: '/images/' + t_name + '.jpg'
         });
     }
+    // }
 });
+
+function userCheck(name: string) {
+    let saveName: string[];
+    if (saveName.hasOwnProperty(name)) {
+        saveName.push(name);
+        return true;
+    } else {
+        // 또는 여기서 User 객체 생성......
+        return false;
+    }
+}
 
 // FIXME: O(n^2) 낮추기
 function randomCard() {
@@ -56,8 +73,6 @@ function randomCard() {
     for (let i = 0; i < 22; i++) {
         let cardIndex = getRandom(0, list2.length);
         list1.push(list2[cardIndex]);
-        /*console.log(`cardIndex : ${cardIndex}`);
-        console.log(`${i} : ${list2}`);*/
         list2.splice(cardIndex, 1);
     }
     return list1;
@@ -65,22 +80,24 @@ function randomCard() {
 
 // FIXME: O(n+) 하는중 ..
 function randomCardO() {
-    let listBool: boolean[] = [];
-    let list: number[] = [];
-    listBool.fill(false, 0, 21);
-    list.fill(0, 0, 21);
-    console.log(list.length);
-    while (true) {
-        let cardIndex = getRandom(0, list.length);
-        if (listBool[cardIndex] == false) {
+    let listBool = new Array(22);
+    let list = new Array();
+    let c: number = 0;
+    let index: number = 0;
+    listBool.fill(false, 0, 22);
+    while (c <= 21) {
+        index = 0;
+        let cardIndex = getRandom(0, listBool.length) % 23;
+        if (listBool[cardIndex] == false) { //false를 너무많이 만나서 index오류가생김
             list.push(cardIndex);
             listBool[cardIndex] = true;
+            console.log(list);
         }
+        c = 0;
         for (let i in listBool) {
-            if (listBool[i] == false) {
-                continue;
+            if (listBool[i] == true) {
+                c++;
             }
-            break;
         }
     }
     return list;
