@@ -1,84 +1,111 @@
 import * as express from 'express';
 import * as fs from 'fs';
 import {Request, Response} from "express";
+import {User} from "./info";
 
 export const router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
-    res.send('respond with a resource');
+    res.send('rsc plz');
 });
 
 //FIXME: 카드 자리 중복 입력시에 제출 금지 -> 수정..
 router.post('/', (req: Request, res: Response) => {
+    let d = new Date();
+    let todayDate = d.getFullYear().toString() + d.getMonth().toString() + d.getDate().toString();
 
-    const name = req.body.id;
+    const name = req.body.id.toString();
     const fst = req.body.fst;
     const sec = req.body.sec;
     const third = req.body.third;
+    let list: number[];
+    let randomFirstIndex: number;
+    let randomSecIndex: number;
+    let randomThirdIndex: number;
 
-    if (fst == sec || fst == third || sec == third) {
-        res.render('index', {title: 'Today Tarot', msg: '중복하여 카드를 선택하지 마세용...'});
-    } else {
-        // let c = userCheck(name);
+    //FIXME: 지금은 list로 전해져오지만 json을 통해서 list를 반환받아야함
+    list = userInfoSearch(name, todayDate);
+    console.log(`return list : ${list}`);
 
-        // if (c) { // 유저가 있다면,
+    randomFirstIndex = list[fst];
+    randomSecIndex = list[sec];
+    randomThirdIndex = list[third];
+
+    const tarotContent = jsonRead();
+
+    let f_name = tarotContent.tarotName[randomFirstIndex];
+    let s_name = tarotContent.tarotName[randomSecIndex];
+    let t_name = tarotContent.tarotName[randomThirdIndex];
+
+    let f_content = tarotContent.tarotMeaning[randomFirstIndex];
+    let s_content = tarotContent.tarotMeaning[randomSecIndex];
+    let t_content = tarotContent.tarotMeaning[randomThirdIndex];
 
 
-        let list = randomCardO();
-        console.log(list);
-        let r_fst = list[fst];
-        let r_sec = list[sec];
-        let r_third = list[third];
+    res.render('users', {
+        title: 'Today Tarot', name: name,
+        past: f_content, present: s_content, future: t_content,
+        past_name: f_name, present_name: s_name, future_name: t_name,
+        img_past: '/images/' + f_name + '.jpg',
+        img_present: '/images/' + s_name + '.jpg',
+        img_future: '/images/' + t_name + '.jpg'
+    });
 
-        const tarotContent = jsonRead();
-
-        let f_name = tarotContent.tarotName[r_fst];
-        let s_name = tarotContent.tarotName[r_sec];
-        let t_name = tarotContent.tarotName[r_third];
-
-        let f_content = tarotContent.tarotMeaning[r_fst];
-        let s_content = tarotContent.tarotMeaning[r_sec];
-        let t_content = tarotContent.tarotMeaning[r_third];
-
-        console.log('/images/' + f_name + '.jpg');
-
-        res.render('users', {
-            title: 'Today Tarot', name: name,
-            past: f_content, present: s_content, future: t_content,
-            past_name: f_name, present_name: s_name, future_name: t_name,
-            img_past: '/images/' + f_name + '.jpg',
-            img_present: '/images/' + s_name + '.jpg',
-            img_future: '/images/' + t_name + '.jpg'
-        });
-    }
-    // }
 });
 
-function userCheck(name: string) {
-    let saveName: string[];
-    if (saveName.hasOwnProperty(name)) {
-        saveName.push(name);
-        return true;
-    } else {
-        // 또는 여기서 User 객체 생성......
-        return false;
+//FIXME: User정보를 JSON으로 저장.
+function saveInfo(name: string, date: string) {
+    let list: number[];
+    type savedUser = { id: string, date: string, constCard: number[] };
+    let savedName: Map<string, savedUser[]> = new Map<string, savedUser[]>();
+
+    //name을 매개로 date에 맞는 consCArd를 꺼내자
+    let sU: savedUser = {id: name, date: date, constCard: []};
+
+    // 저장된게 하나도 없으면 초기화
+    if (savedName.size == 0) {
+        let user = new User(name);
+        list = user.getCard(date);
+        savedName.set(name, [sU]);
+        savedName.get(name)[0].constCard = list;
+        // return list;
     }
+
+    //이름 탐색
+    /*let c = false;
+    for (let i = 0; i < savedName.size; i++) {
+        if (savedName.get(name)[i].id == name) {
+            // FIXME: 정보를 Json에서 찾아야함.
+            // 이미 name이 있을 경우,
+            c = true;
+            list = savedName.get(name)[0].constCard;
+            // return list;
+        }
+    }
+
+    if (!c) {
+        let user = new User(name);
+        list = user.getCard(date);
+        savedName.set(name, [sU]);
+        savedName.get(name)[0].constCard = list;
+        // return list;
+    }
+
+    let data = JSON.stringify(savedName.get(name)[0]);
+
+    //FIXME: writefilesync를 하면 연결을 재설정해야한다는 오류가난다... ㅠㅠ
+    // let fileJson = fs.writeFileSync("./public/json/userInfo.json", data, 'utf8');
+    */
 }
 
-// FIXME: O(n^2) 낮추기
-function randomCard() {
-    let list1: number[] = [];
-    let list2: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
 
-    for (let i = 0; i < 22; i++) {
-        let cardIndex = getRandom(0, list2.length);
-        list1.push(list2[cardIndex]);
-        list2.splice(cardIndex, 1);
-    }
-    return list1;
+function userInfoSearch(name: string, todayDate: string) {
+    //FIXME: User 정보 Json File로 정리해서 꺼내서 탐색.
+    let readJson = fs.readFileSync("./public/json/userInfo.json", 'utf8');
+    let rstCard : number[] = JSON.parse(readJson).constCard;
+    return rstCard;
 }
 
-// FIXME: O(n+) 하는중 ..
 function randomCardO() {
     let listBool = new Array(22);
     let list = new Array();
@@ -88,16 +115,14 @@ function randomCardO() {
     while (c <= 21) {
         index = 0;
         let cardIndex = getRandom(0, listBool.length) % 23;
-        if (listBool[cardIndex] == false) { //false를 너무많이 만나서 index오류가생김
+        if (listBool[cardIndex] == false) {
             list.push(cardIndex);
             listBool[cardIndex] = true;
             console.log(list);
         }
         c = 0;
         for (let i in listBool) {
-            if (listBool[i] == true) {
-                c++;
-            }
+            if (listBool[i] == true) c++;
         }
     }
     return list;
