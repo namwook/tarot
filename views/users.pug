@@ -33,7 +33,8 @@ block content
                 div(class='card-body')
                     h4(class='card-title bs') #{future_name}
                     p(class='card-text') #{future}
-
-    button(class='btn btn-primary', type='button', data-toggle="collapse", data-target="#collapseExample",aria-expanded="false", aria-controls="collapseExample") 해석
-    .collapse#collapseExample
-        p pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+    .row
+        .col-12.text-center.mt-2
+            button(class='btn btn-primary', type='button', data-toggle="collapse", data-target="#collapseExample", aria-expanded="false", aria-controls="collapseExample") 해석
+            .collapse#collapseExample
+                p #{result}
