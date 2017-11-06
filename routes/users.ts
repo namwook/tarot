@@ -49,7 +49,7 @@ router.post('/', (req: Request, res: Response) => {
     let t_content = tarotContent.tarotMeaning[randomThirdIndex];
 
     let resultTarot = jsonRead("./public/json/result.json");
-    let result = resultTarot[getRandom(0, 3) % 3];
+    let result = resultTarot[getRandom(1, 3) % 3];
 
     res.render('users', {
         title: 'Today Tarot', name: name,
