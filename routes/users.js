@@ -2,83 +2,91 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
+const info_1 = require("./info");
 exports.router = express.Router();
 exports.router.get('/', (req, res) => {
-    res.send('respond with a resource');
+    res.send('rsc plz');
 });
 //FIXME: 카드 자리 중복 입력시에 제출 금지 -> 수정..
 exports.router.post('/', (req, res) => {
-    const name = req.body.id;
+    let d = new Date();
+    let todayDate = d.getFullYear().toString() + d.getMonth().toString() + d.getDate().toString();
+    const name = req.body.id.toString();
     const fst = req.body.fst;
     const sec = req.body.sec;
     const third = req.body.third;
-    if (fst == sec || fst == third || sec == third) {
-        res.render('index', { title: 'Today Tarot', msg: '중복하여 카드를 선택하지 마세용...' });
-    }
-    else {
-        let list = randomCard();
-        let r_fst = list[fst];
-        let r_sec = list[sec];
-        let r_third = list[third];
-        const tarotContent = jsonRead();
-        let f_name = tarotContent.tarotName[r_fst];
-        let s_name = tarotContent.tarotName[r_sec];
-        let t_name = tarotContent.tarotName[r_third];
-        let f_content = tarotContent.tarotMeaning[r_fst];
-        let s_content = tarotContent.tarotMeaning[r_sec];
-        let t_content = tarotContent.tarotMeaning[r_third];
-        console.log('/images/' + f_name + '.jpg');
-        res.render('users', {
-            title: 'Today Tarot', name: name,
-            past: f_content, present: s_content, future: t_content,
-            past_name: f_name, present_name: s_name, future_name: t_name,
-            img_past: '/images/' + f_name + '.jpg',
-            img_present: '/images/' + s_name + '.jpg',
-            img_future: '/images/' + t_name + '.jpg'
-        });
-    }
+    let list;
+    let randomFirstIndex;
+    let randomSecIndex;
+    let randomThirdIndex;
+    //test
+    let test = saveInfo(name, todayDate);
+    //FIXME: 지금은 list로 전해져오지만 json을 통해서 list를 반환받아야함
+    list = userInfoSearch(name, todayDate);
+    console.log(`return list : ${list}`);
+    randomFirstIndex = list[fst];
+    randomSecIndex = list[sec];
+    randomThirdIndex = list[third];
+    const tarotContent = jsonRead("./public/json/tarot.json");
+    let f_name = tarotContent.tarotName[randomFirstIndex];
+    let s_name = tarotContent.tarotName[randomSecIndex];
+    let t_name = tarotContent.tarotName[randomThirdIndex];
+    let f_content = tarotContent.tarotMeaning[randomFirstIndex];
+    let s_content = tarotContent.tarotMeaning[randomSecIndex];
+    let t_content = tarotContent.tarotMeaning[randomThirdIndex];
+    let resultTarot = jsonRead("./public/json/result.json");
+    let result = resultTarot[getRandom(0, 3) % 3];
+    res.render('users', {
+        title: 'Today Tarot', name: name,
+        past: f_content, present: s_content, future: t_content,
+        past_name: f_name, present_name: s_name, future_name: t_name,
+        img_past: '/images/' + f_name + '.jpg',
+        img_present: '/images/' + s_name + '.jpg',
+        img_future: '/images/' + t_name + '.jpg',
+        result: result
+    });
 });
-// FIXME: O(n^2) 낮추기
-function randomCard() {
-    let list1 = [];
-    let list2 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
-    for (let i = 0; i < 22; i++) {
-        let cardIndex = getRandom(0, list2.length);
-        list1.push(list2[cardIndex]);
-        /*console.log(`cardIndex : ${cardIndex}`);
-        console.log(`${i} : ${list2}`);*/
-        list2.splice(cardIndex, 1);
+//FIXME: User정보를 JSON으로 저장.
+function saveInfo(name, date) {
+    console.log('=====================save info======================');
+    let list;
+    let savedName = new Map();
+    let userDataPath = path.join(__dirname, '..', 'public/userData');
+    let sU = { id: name, date: date, constCard: [] };
+    let user = new info_1.User(name);
+    list = user.getCard(date);
+    savedName.set(name, [sU]);
+    savedName.get(name)[0].constCard = list;
+    // User 정보를 'public/userData/현재 날짜' 디렉토리에 name.json 으로 저장한다
+    let userMapIter = savedName.keys();
+    for (let i = 0; i < savedName.size; i++) {
+        let key = userMapIter.next().value;
+        let data = JSON.stringify(savedName.get(key)[i]);
+        let userDirName = path.join(userDataPath, savedName.get(name)[i].date);
+        let userFileName = path.join(userDirName, savedName.get(name)[i].id + '.json');
+        console.log(`data : ${data}`);
+        console.log(`user file name is : ${userFileName}`);
+        if (!fs.existsSync(userDirName))
+            fs.mkdirSync(userDirName);
+        if (!fs.existsSync(userFileName))
+            fs.writeFileSync(userFileName, data, 'utf8');
     }
-    return list1;
 }
-// FIXME: O(n+) 하는중 ..
-function randomCardO() {
-    let listBool = [];
-    let list = [];
-    listBool.fill(false, 0, 21);
-    list.fill(0, 0, 21);
-    console.log(list.length);
-    while (true) {
-        let cardIndex = getRandom(0, list.length);
-        if (listBool[cardIndex] == false) {
-            list.push(cardIndex);
-            listBool[cardIndex] = true;
-        }
-        for (let i in listBool) {
-            if (listBool[i] == false) {
-                continue;
-            }
-            break;
-        }
-    }
-    return list;
+function userInfoSearch(name, todayDate) {
+    console.log('=====================userinfosearch======================');
+    let readJson = fs.readFileSync('./public/userData/' + todayDate + '/' + name + '.json', 'utf8');
+    let rstCard = JSON.parse(readJson).constCard;
+    console.log(`readJson id is : ${JSON.parse(readJson).id}`);
+    console.log(`result card is : ${rstCard}`);
+    return rstCard;
 }
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-function jsonRead() {
-    let fileJson = fs.readFileSync("./public/json/tarot.json", 'utf8');
-    const fileJsonContent = JSON.parse(fileJson);
-    return fileJsonContent;
+function jsonRead(path) {
+    let fileJson = fs.readFileSync(path, 'utf8');
+    const fileJContent = JSON.parse(fileJson);
+    return fileJContent;
 }
 //# sourceMappingURL=users.js.map
